@@ -1,0 +1,11 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+    <head>
+        <script>
+        window.location.href = "https://rover.link"
+        </script>
+        <meta charset="UTF-8">
+        <meta http-equiv="refresh" content="0; url=https://rover.link">
+        <title>RoVer</title>
+    </head>
+</html>
