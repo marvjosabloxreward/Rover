@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RoVer - Sign In</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoVer - Sign In</title>
 
-<link rel="stylesheet" href="css/style.css">
-<link rel="icon" type="image/png" href="favicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -28,9 +28,16 @@
     </div>
 
     <div class="nav-right">
-        <button class="btn-manage">Manage Servers</button>
-        <button class="btn-signin">Sign In</button>
+        <button class="btn-manage" id="manageServersBtn">Manage Servers</button>
+        <button class="btn-signin" id="signInBtn">Sign In</button>
     </div>
+    
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 </header>
 
 <!-- MAIN -->
@@ -50,21 +57,21 @@
         <span class="attributions">attributions</span>
     </div>
 
-    <div class="footer-column">
+    <div class="footer_column">
         <a href="#">Team members</a>
         <a href="#">Support Discord server ↗</a>
         <a href="#">Add RoLink to your server</a>
         <a href="#">Bot Developer API</a>
     </div>
 
-    <div class="footer-column">
+    <div class="footer_column">
         <a href="#">Terms of Service</a>
         <a href="#">Privacy Policy</a>
         <a href="#">Verify your Roblox account</a>
     </div>
 </footer>
 
-<!-- POPUP OVERLAY -->
+<!-- POPUP OVERLAY - Main OAuth -->
 <div class="popup-overlay" id="popupOverlay">
     <div class="popup-container" id="popupContainer">
         <!-- Top Bar -->
@@ -108,7 +115,41 @@
     </div>
 </div>
 
+<!-- POPUP OVERLAY - Not Logged In (Manage Servers) -->
+<div class="popup-overlay alert-popup" id="notLoggedPopup">
+    <div class="alert-popup-container">
+        <button class="alert-close" id="notLoggedClose">&times;</button>
+        <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        </div>
+        <h2>You are not authenticated</h2>
+        <p>Please sign in to manage your servers.</p>
+    </div>
+</div>
+
+<!-- POPUP OVERLAY - Add Roblox Account (Sign In) -->
+<div class="popup-overlay alert-popup" id="addRobloxPopup">
+    <div class="alert-popup-container">
+        <button class="alert-close" id="addRobloxClose">&times;</button>
+        <div class="alert-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+            </svg>
+        </div>
+        <h2>You must add your Roblox account first</h2>
+        <p>Please log in with your Roblox account to continue.</p>
+    </div>
+</div>
+
 <script>
+    // Main OAuth Popup
     const loginBtn = document.getElementById('loginBtn');
     const popupOverlay = document.getElementById('popupOverlay');
     const popupContainer = document.getElementById('popupContainer');
@@ -122,6 +163,19 @@
     const message2 = document.getElementById('message2');
     const message3 = document.getElementById('message3');
     const message4 = document.getElementById('message4');
+
+    // Alert Popups
+    const manageServersBtn = document.getElementById('manageServersBtn');
+    const signInBtn = document.getElementById('signInBtn');
+    const notLoggedPopup = document.getElementById('notLoggedPopup');
+    const notLoggedClose = document.getElementById('notLoggedClose');
+    const addRobloxPopup = document.getElementById('addRobloxPopup');
+    const addRobloxClose = document.getElementById('addRobloxClose');
+
+    // Mobile Menu
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.querySelector('.nav-links');
+    const navRight = document.querySelector('.nav-right');
 
     // Open popup on login button click
     loginBtn.addEventListener('click', () => {
@@ -190,6 +244,43 @@
             iframeContent.style.display = 'block';
             popupContainer.classList.add('expanded');
         }, 6500);
+    });
+
+    // Manage Servers - Not Logged In Popup
+    manageServersBtn.addEventListener('click', () => {
+        notLoggedPopup.classList.add('active');
+    });
+
+    notLoggedClose.addEventListener('click', () => {
+        notLoggedPopup.classList.remove('active');
+    });
+
+    notLoggedPopup.addEventListener('click', (e) => {
+        if (e.target === notLoggedPopup) {
+            notLoggedPopup.classList.remove('active');
+        }
+    });
+
+    // Sign In - Add Roblox Account Popup
+    signInBtn.addEventListener('click', () => {
+        addRobloxPopup.classList.add('active');
+    });
+
+    addRobloxClose.addEventListener('click', () => {
+        addRobloxPopup.classList.remove('active');
+    });
+
+    addRobloxPopup.addEventListener('click', (e) => {
+        if (e.target === addRobloxPopup) {
+            addRobloxPopup.classList.remove('active');
+        }
+    });
+
+    // Mobile Menu Toggle
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenuBtn.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        navRight.classList.toggle('active');
     });
 </script>
 
